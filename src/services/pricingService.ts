@@ -2,7 +2,7 @@ import { PricingParams, PriceBreakdown } from '../types';
 import { DISTANCE_MATRIX } from '../data/lgas';
 
 const DEFAULT_PRICING_PARAMS: PricingParams = {
-  baseRate: 300,
+  baseRate: 1000,
   fuelSurcharge: 1.25,
   loadFactors: {
     half: 1.15,
