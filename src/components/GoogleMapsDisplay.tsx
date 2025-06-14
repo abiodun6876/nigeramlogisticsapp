@@ -17,28 +17,32 @@ export const GoogleMapsDisplay: React.FC<GoogleMapsDisplayProps> = ({
   className = ""
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
-  const googleMapsService = useRef(new GoogleMapsService());
-  const isMounted = useRef(false);
+  const mapInstance = useRef<google.maps.Map | null>(null);
+  const directionsRenderer = useRef<google.maps.DirectionsRenderer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const googleMapsService = useRef<GoogleMapsService>(new GoogleMapsService());
+  const mapWrapperRef = useRef<HTMLDivElement | null>(null);
 
-  // Initialize and cleanup map
+  // Initialize map
   useEffect(() => {
-    isMounted.current = true;
-    let mapInstance: google.maps.Map | null = null;
-    let rendererInstance: google.maps.DirectionsRenderer | null = null;
+    let isActive = true;
 
     const initMap = async () => {
-      if (!mapContainerRef.current || !isMounted.current) return;
-
       try {
         await googleMapsService.current.initialize();
         
-        if (!isMounted.current) return;
+        if (!isActive || !mapContainerRef.current) return;
 
-        mapInstance = new google.maps.Map(mapContainerRef.current, {
+        // Create a completely separate DOM node for Google Maps
+        const wrapper = document.createElement('div');
+        wrapper.style.height = '100%';
+        wrapper.style.width = '100%';
+        mapContainerRef.current.appendChild(wrapper);
+        mapWrapperRef.current = wrapper;
+
+        // Initialize map on the separate DOM node
+        const map = new google.maps.Map(wrapper, {
           zoom: 10,
           center: { lat: 6.5244, lng: 3.3792 },
           mapTypeControl: true,
@@ -51,7 +55,8 @@ export const GoogleMapsDisplay: React.FC<GoogleMapsDisplayProps> = ({
           }]
         });
 
-        rendererInstance = new google.maps.DirectionsRenderer({
+        // Initialize directions renderer
+        const renderer = new google.maps.DirectionsRenderer({
           suppressMarkers: false,
           polylineOptions: {
             strokeColor: '#10B981',
@@ -60,9 +65,9 @@ export const GoogleMapsDisplay: React.FC<GoogleMapsDisplayProps> = ({
           }
         });
 
-        rendererInstance.setMap(mapInstance);
-        mapRef.current = mapInstance;
-        directionsRendererRef.current = rendererInstance;
+        renderer.setMap(map);
+        mapInstance.current = map;
+        directionsRenderer.current = renderer;
         setIsLoading(false);
       } catch (err) {
         console.error('Failed to initialize Google Maps:', err);
@@ -74,28 +79,34 @@ export const GoogleMapsDisplay: React.FC<GoogleMapsDisplayProps> = ({
     initMap();
 
     return () => {
-      isMounted.current = false;
-      if (rendererInstance) {
-        rendererInstance.setMap(null);
-        directionsRendererRef.current = null;
+      isActive = false;
+      
+      // Clean up Google Maps instances
+      if (directionsRenderer.current) {
+        directionsRenderer.current.setMap(null);
       }
-      if (mapInstance) {
-        google.maps.event.clearInstanceListeners(mapInstance);
-        mapRef.current = null;
+      
+      // Remove the wrapper div manually
+      if (mapWrapperRef.current && mapContainerRef.current) {
+        mapContainerRef.current.removeChild(mapWrapperRef.current);
       }
+      
+      mapInstance.current = null;
+      directionsRenderer.current = null;
+      mapWrapperRef.current = null;
     };
   }, []);
 
   // Display route when stops change
   useEffect(() => {
-    if (!mapRef.current || !directionsRendererRef.current || stops.length < 2) return;
+    if (!mapInstance.current || !directionsRenderer.current || stops.length < 2) return;
 
     const displayRoute = async () => {
       try {
         const route = await googleMapsService.current.calculateRoute(stops);
-        if (route && directionsRendererRef.current) {
-          directionsRendererRef.current.setDirections(route.directionsResult);
-          mapRef.current?.fitBounds(route.bounds);
+        if (route && directionsRenderer.current) {
+          directionsRenderer.current.setDirections(route.directionsResult);
+          mapInstance.current?.fitBounds(route.bounds);
         }
       } catch (err) {
         console.error('Failed to display route:', err);
@@ -108,11 +119,11 @@ export const GoogleMapsDisplay: React.FC<GoogleMapsDisplayProps> = ({
 
   // Handle window resize
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapInstance.current) return;
 
     const handleResize = () => {
-      google.maps.event.trigger(mapRef.current!, 'resize');
-      if (stops.length >= 2 && directionsRendererRef.current) {
+      google.maps.event.trigger(mapInstance.current!, 'resize');
+      if (stops.length >= 2 && directionsRenderer.current?.getDirections()) {
         const bounds = new google.maps.LatLngBounds();
         stops.forEach(stop => {
           if (stop.lat && stop.lng) {
@@ -120,19 +131,13 @@ export const GoogleMapsDisplay: React.FC<GoogleMapsDisplayProps> = ({
           }
         });
         if (!bounds.isEmpty()) {
-          mapRef.current?.fitBounds(bounds);
+          mapInstance.current?.fitBounds(bounds);
         }
       }
     };
 
-    const resizeObserver = new ResizeObserver(handleResize);
-    if (mapContainerRef.current) {
-      resizeObserver.observe(mapContainerRef.current);
-    }
-
-    return () => {
-      resizeObserver.disconnect();
-    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [stops]);
 
   const validStops = stops.filter(stop => stop.lga.trim());
@@ -172,11 +177,11 @@ export const GoogleMapsDisplay: React.FC<GoogleMapsDisplayProps> = ({
         )}
       </div>
 
+      {/* Map container - React won't touch its children */}
       <div 
         ref={mapContainerRef}
         className="w-full h-80 bg-gray-100 relative"
         style={{ minHeight: '320px' }}
-        dangerouslySetInnerHTML={{ __html: '' }}
       >
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-80">
