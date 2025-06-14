@@ -14,6 +14,8 @@ const DEFAULT_PRICING_PARAMS: PricingParams = {
     '17': 1.5, '18': 1.8, '19': 2.0, '20': 1.3, // Evening rush
   },
   lastUpdated: new Date().toISOString(),
+  profitMarginPercentage: 0,
+  vehicleSpecs: {} as import('../types').VehicleSpecs
 };
 
 export class PricingService {
@@ -90,14 +92,18 @@ export class PricingService {
     const total = subtotal * this.params.fuelSurcharge;
 
     return {
-      baseDistance: distance,
-      adjustedDistance,
-      baseRate: this.params.baseRate,
-      trafficMultiplier,
-      loadFactor,
-      fuelSurcharge: this.params.fuelSurcharge,
-      subtotal,
-      total: Math.round(total),
-    };
+  baseDistance: distance,
+  adjustedDistance,
+  baseRate: this.params.baseRate,
+  trafficMultiplier,
+  loadFactor,
+  fuelSurcharge: this.params.fuelSurcharge,
+  subtotal,
+  total: Math.round(total),
+  realFuelCost: 0,
+  profitMargin: 0,
+  baseCalculation: 0,
+  breakEvenPrice: 0
+};
   }
 }

@@ -9,6 +9,7 @@ import { UserGuide } from './components/UserGuide';
 import { RouteBuilderState, Quote, PriceBreakdown, FuelData } from './types';
 import { EnhancedPricingService } from './services/enhancedPricingService';
 import { StorageService } from './services/storageService';
+import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const [activeTab, setActiveTab] = useState<'calculator' | 'quotes'>('calculator');
@@ -19,8 +20,16 @@ function App() {
   
   const [routeState, setRouteState] = useState<RouteBuilderState>({
     stops: [
-      { id: 'stop_1', type: 'pickup', lga: '', address: '' },
-      { id: 'stop_2', type: 'dropoff', lga: '', address: '' },
+      {
+        id: 'stop_1', type: 'pickup', lga: '', address: '',
+        lat: 0,
+        lng: undefined
+      },
+      {
+        id: 'stop_2', type: 'dropoff', lga: '', address: '',
+        lat: 0,
+        lng: undefined
+      },
     ],
     loadSize: 'semi-full',
     loadWeight: 0,
@@ -112,8 +121,16 @@ function App() {
   const handleNewQuote = () => {
     setRouteState({
       stops: [
-        { id: 'stop_1', type: 'pickup', lga: '', address: '' },
-        { id: 'stop_2', type: 'dropoff', lga: '', address: '' },
+        {
+          id: 'stop_1', type: 'pickup', lga: '', address: '',
+          lat: 0,
+          lng: undefined
+        },
+        {
+          id: 'stop_2', type: 'dropoff', lga: '', address: '',
+          lat: 0,
+          lng: undefined
+        },
       ],
       loadSize: 'semi-full',
       loadWeight: 0,
@@ -127,6 +144,7 @@ function App() {
     setFuelData(null);
     setActiveTab('calculator');
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
@@ -276,11 +294,17 @@ function App() {
             {/* Maps and Price Calculator Grid */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
               {/* Google Maps Display */}
-              <GoogleMapsDisplay 
-                stops={routeState.stops}
-                distance={routeDistance}
-                duration={routeDuration}
-              />
+        
+
+<ErrorBoundary fallback={<div className="bg-red-50 p-4 rounded-lg">Map failed to load</div>}>
+ <GoogleMapsDisplay
+  key={`map-${routeState.stops.map(stop => stop.id).join('-')}`}
+  stops={routeState.stops.filter(stop => stop.lga.trim() !== '')}
+  distance={routeDistance}
+  duration={routeDuration}
+  className="h-full"
+/>
+</ErrorBoundary>
 
               {/* Enhanced Price Calculator */}
               <EnhancedPriceCalculator

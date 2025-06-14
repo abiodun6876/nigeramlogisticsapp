@@ -4,6 +4,8 @@ export interface LGA {
 }
 
 export interface Stop {
+  lat: number;
+  lng: number | boolean | null | undefined;
   id: string;
   type: 'pickup' | 'dropoff';
   lga: string;
@@ -84,9 +86,23 @@ export interface RouteBuilderState {
   isCalculating: boolean;
 }
 
+
+
 export interface GoogleMapsRoute {
-  distance: number;
-  duration: number;
+  directionsResult: google.maps.DirectionsResult | null;
+  distance: number; // in km
+  duration: number; // in minutes
   polyline: string;
   bounds: google.maps.LatLngBounds;
+  directions: {
+    result: google.maps.DirectionsResult;
+    routes: google.maps.DirectionsRoute[];
+    waypoints: google.maps.DirectionsGeocodedWaypoint[];
+  };
+}
+
+export interface DirectionsResponse {
+  routes: google.maps.DirectionsRoute[];
+  geocoded_waypoints: google.maps.DirectionsGeocodedWaypoint[];
+  request: any; // You can define a more specific type if needed
 }

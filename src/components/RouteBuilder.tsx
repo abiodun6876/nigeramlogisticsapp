@@ -17,6 +17,8 @@ export const RouteBuilder: React.FC<RouteBuilderProps> = ({ state, onStateChange
       type: newStopType,
       lga: '',
       address: '',
+      lat: 0,
+      lng: undefined
     };
 
     onStateChange({
