@@ -3,12 +3,13 @@ import { GoogleMapsService } from './googleMapsService';
 import { FuelPriceService } from './fuelPriceService';
 
 const DEFAULT_VEHICLE_SPECS: VehicleSpecs = {
-  name: 'Ford Transit Van',
-  year: 2025,
-  fuelConsumption: 12.0, // L/100km
-  loadCapacity: 1400, // kg
+  name: 'Ford Cargo Van',
+  year: 2016,
+  fuelConsumption: 15.0, // L/100km (approx for older cargo vans; adjust as needed)
+  loadCapacity: 1300,     // kg (adjusted to typical 2016 Ford cargo specs)
   fuelType: 'petrol'
 };
+
 
 const DEFAULT_PRICING_PARAMS: PricingParams = {
   baseRate: 300,

@@ -58,9 +58,7 @@ export class PricingService {
 
   private estimateDistance(fromLGA: string, toLGA: string): number {
     // Simplified distance estimation based on common routes
-    const sameZoneDistance = 15;
     const crossMainlandIslandDistance = 25;
-    const toOutskirtDistance = 40;
 
     if (fromLGA === toLGA) return 5;
     

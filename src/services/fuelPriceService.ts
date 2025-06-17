@@ -2,7 +2,7 @@ import { FuelData } from '../types';
 
 export class FuelPriceService {
   private readonly NNPC_API_URL = 'https://api.nnpcgroup.com/fuel-prices'; // Mock URL
-  private readonly FALLBACK_PRICE = 750; // Naira per liter
+  private readonly FALLBACK_PRICE = 900; // Naira per liter
 
   async getCurrentFuelPrice(): Promise<FuelData> {
     try {
