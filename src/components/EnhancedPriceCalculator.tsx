@@ -81,11 +81,11 @@ export const EnhancedPriceCalculator: React.FC<EnhancedPriceCalculatorProps> = (
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
           <Calculator className="w-6 h-6 text-green-600" />
-          <h2 className="text-xl font-semibold text-gray-800">Enhanced Price Calculator</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Price Calculator</h2>
         </div>
         <div className="text-center py-8 text-gray-500">
           <Calculator className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-          <p>Configure your route to see enhanced pricing</p>
+          <p>Configure your route to see pricing</p>
           <p className="text-sm mt-2">Includes Google Maps data, live fuel prices, and vehicle specs</p>
         </div>
       </div>
@@ -98,7 +98,7 @@ export const EnhancedPriceCalculator: React.FC<EnhancedPriceCalculatorProps> = (
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex items-center gap-3 mb-6">
           <BarChart3 className="w-6 h-6 text-green-600" />
-          <h2 className="text-xl font-semibold text-gray-800">Enhanced Price Breakdown</h2>
+          <h2 className="text-xl font-semibold text-gray-800">Price Breakdown</h2>
         </div>
 
         {/* Google Maps Data & Live Fuel Price */}
@@ -295,7 +295,7 @@ export const EnhancedPriceCalculator: React.FC<EnhancedPriceCalculatorProps> = (
 
       {/* Enhanced Calculation Formula */}
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h3 className="font-semibold text-green-800 mb-3">Enhanced Calculation Formula:</h3>
+        <h3 className="font-semibold text-green-800 mb-3"> Calculation Formula:</h3>
         <div className="bg-green-50 p-4 rounded-lg">
           <p className="text-sm text-green-700 font-mono mb-2">
             (({distance.toFixed(1)}km × {breakdown.trafficMultiplier.toFixed(1)} × ₦{breakdown.baseRate} × {breakdown.loadFactor.toFixed(2)}) + ₦{breakdown.realFuelCost.toLocaleString()} fuel) × {breakdown.fuelSurcharge} + ₦{breakdown.profitMargin.toLocaleString()} profit

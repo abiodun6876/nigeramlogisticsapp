@@ -22,6 +22,8 @@ export const EnhancedRouteBuilder: React.FC<EnhancedRouteBuilderProps> = ({
       type: newStopType,
       lga: '',
       address: '',
+      lat: 0,
+      lng: undefined
     };
 
     onStateChange({
@@ -67,7 +69,7 @@ export const EnhancedRouteBuilder: React.FC<EnhancedRouteBuilderProps> = ({
     <div className="bg-white rounded-xl shadow-lg p-6">
       <div className="flex items-center gap-3 mb-6">
         <MapPin className="w-6 h-6 text-green-600" />
-        <h2 className="text-xl font-semibold text-gray-800">Enhanced Route Builder</h2>
+        <h2 className="text-xl font-semibold text-gray-800">Route Builder</h2>
       </div>
 
       {/* Vehicle Info */}

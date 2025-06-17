@@ -53,7 +53,12 @@ function App() {
       
       // Calculate enhanced pricing with real-time data
       pricingService.calculateEnhancedPrice(
-        validStops.map(stop => ({ lga: stop.lga, address: stop.address })),
+        validStops.map(stop => ({
+          lga: stop.lga,
+          address: stop.address,
+          lat: typeof stop.lat === 'number' ? stop.lat : 0,
+          lng: typeof stop.lng === 'number' ? stop.lng : 0
+        })),
         routeState.loadSize,
         routeState.loadWeight,
         routeState.pickupTime

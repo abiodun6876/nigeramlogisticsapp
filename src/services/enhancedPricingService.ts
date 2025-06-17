@@ -57,7 +57,10 @@ export class EnhancedPricingService {
   }
 
   async calculateEnhancedPrice(
-    stops: Array<{ lga: string; address: string }>,
+    stops: Array<{
+      lat: number;
+      lng: number; lga: string; address: string 
+}>,
     loadSize: 'half' | 'semi-full' | 'full',
     loadWeight: number,
     pickupTime: string
@@ -69,7 +72,9 @@ export class EnhancedPricingService {
           id: `stop_${index}`,
           type: index === 0 ? 'pickup' : 'dropoff',
           lga: stop.lga,
-          address: stop.address
+          address: stop.address,
+          lat: stop.lat ?? 0,
+          lng: stop.lng ?? 0
         }))
       );
 
@@ -86,7 +91,9 @@ export class EnhancedPricingService {
           id: `stop_${index}`,
           type: index === 0 ? 'pickup' : 'dropoff',
           lga: stop.lga,
-          address: stop.address
+          address: stop.address,
+          lat: stop.lat ?? 0,
+          lng: stop.lng ?? 0
         }))
       );
       

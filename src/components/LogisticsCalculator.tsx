@@ -210,7 +210,7 @@ const LogisticsCalculator = () => {
                 <Truck className="w-6 h-6 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-bold text-gray-900">Nigerian Logistics</h1>
+                <h1 className="text-xl font-bold text-gray-900">Nigeram Logistics</h1>
                 <p className="text-sm text-gray-600">Pricing Calculator</p>
               </div>
             </div>
